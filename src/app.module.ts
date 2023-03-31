@@ -7,9 +7,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 
-import { AppController } from './app.controller';
-
-import { AppService } from './app.service';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,9 +30,8 @@ import { AppService } from './app.service';
     PostsModule,
     AuthModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,

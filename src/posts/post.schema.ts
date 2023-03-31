@@ -1,8 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, ObjectId } from 'mongoose';
-export type PostDocument = HydratedDocument<Post>;
 
+/**
+ * Represents a Post document in the database.
+ * It is defined by a title, a body, a userId and a unique ObjectId.
+ */
 @Schema({timestamps: true})
 export class Post {
   @Prop()
@@ -20,4 +23,5 @@ export class Post {
   _id: ObjectId
 }
 
+export type PostDocument = HydratedDocument<Post>;
 export const PostSchema = SchemaFactory.createForClass(Post);
