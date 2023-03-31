@@ -14,11 +14,14 @@ export class User {
   @Prop()
   lastName: string;
 
+  @Prop({
+    required: true,
+    index: true
+  })
+  userId: string;
+
   @Prop()
-  userId:string
-  
-  @Prop()
-  provider:string
+  provider: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

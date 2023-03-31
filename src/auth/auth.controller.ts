@@ -8,7 +8,7 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  googleLogin(@Request() req) {
+  googleLogin() {
     /* TODO document why this method 'googleLogin' is empty */
   }
 
