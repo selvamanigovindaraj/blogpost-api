@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ObjectId } from 'mongoose';
 
 export class CreatePostDto {
   @ApiProperty({
@@ -11,5 +12,5 @@ export class CreatePostDto {
     required: true,
     minimum: 20,
   })
-  description: string;
+  body: string;
 }
