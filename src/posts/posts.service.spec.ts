@@ -60,6 +60,19 @@ describe('postService', () => {
       const updatePost = await postService.findPostById(createPost._id);
       expect(updatePost.title).toBe('new title');
     });
+    it('should throw not found exception for deleted post', async () => {
+      try {
+        const post = await postService.createPost(PostDtoStub(), {
+          userId: '1',
+        });
+        await postService.deletePostById(post._id);
+        await postService.updatePostById(post._id, {
+          title: 'new title',
+        });
+      } catch (error) {
+        expect(error.message).toBe('Post not found');
+      }
+    });
   });
 
   describe('get Post By User', () => {
@@ -79,6 +92,17 @@ describe('postService', () => {
       const newPost = await postService.findPostById(post._id);
       expect(newPost.title).toBe(PostDtoStub().title);
     });
+    it('should throw not found exception if poster not found', async () => {
+      try {
+        const post = await postService.createPost(PostDtoStub(), {
+          userId: '1',
+        });
+        await postService.deletePostById(post._id);
+        await postService.findPostById(post._id);
+      } catch (error) {
+        expect(error.message).toBe('Post not found');
+      }
+    });
   });
 
   describe('delete Post By Id', () => {
@@ -88,11 +112,16 @@ describe('postService', () => {
       expect(deleteAck.acknowledged).toBe(true);
       expect(deleteAck.deletedCount).toBe(1);
     });
-    it('get Post By Id should return null for deleted Post', async () => {
-      const post = await postService.createPost(PostDtoStub(), { userId: '1' });
-      await postService.deletePostById(post._id);
-      const deletedPost = await postService.findPostById(post._id);
-      expect(deletedPost).toBeNull();
+    it('get Post By Id should return not found for deleted Post', async () => {
+      try {
+        const post = await postService.createPost(PostDtoStub(), {
+          userId: '1',
+        });
+        await postService.deletePostById(post._id);
+        await postService.findPostById(post._id);
+      } catch (error) {
+        expect(error.message).toBe('Post not found');
+      }
     });
   });
 });

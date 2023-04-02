@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post, PostDocument } from './post.schema';
@@ -43,8 +43,12 @@ export class PostsService {
    * @param {ObjectId} id - Unique identifier for the Post
    * @returns {Promise<Post>} Promise that resolves to the Post object
    */
-  findPostById(id: ObjectId): Promise<Post> {
-    return this.postModel.findById(id).exec();
+  async findPostById(id: ObjectId): Promise<Post> {
+    const post = await this.postModel.findById(id).exec();
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+    return post;
   }
 
   /**
@@ -54,8 +58,17 @@ export class PostsService {
    * @param {UpdatePostDto} updatePostDto - Data to update the Post with
    * @returns {Promise<Post>} Promise that resolves to the updated Post object
    */
-  updatePostById(id: ObjectId, updatePostDto: UpdatePostDto): Promise<Post> {
-    return this.postModel.findOneAndUpdate({ _id: id }, updatePostDto).exec();
+  async updatePostById(
+    id: ObjectId,
+    updatePostDto: UpdatePostDto,
+  ): Promise<Post> {
+    const updatedPost = await this.postModel
+      .findOneAndUpdate({ _id: id }, updatePostDto)
+      .exec();
+    if (!updatedPost) {
+      throw new NotFoundException('Post not found');
+    }
+    return updatedPost;
   }
 
   /**

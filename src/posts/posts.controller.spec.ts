@@ -109,14 +109,17 @@ describe('PostsController', () => {
       expect(deleteAck.acknowledged).toBe(true);
       expect(deleteAck.deletedCount).toBe(1);
     });
-    it('get Post By Id should return null for deleted Post', async () => {
-      const post = await postsController.createPost(
-        { user: { userId: '1' } },
-        PostDtoStub(),
-      );
-      await postsController.deletePost(post._id);
-      const deletedPost = await postsController.getPostById(post._id);
-      expect(deletedPost).toBeNull();
+    it('get Post By Id should throw not found exception for deleted Post', async () => {
+      try {
+        const post = await postsController.createPost(
+          { user: { userId: '1' } },
+          PostDtoStub(),
+        );
+        await postsController.deletePost(post._id);
+        await postsController.getPostById(post._id);
+      } catch (error) {
+        expect(error.message).toBe('Post not found');
+      }
     });
   });
 });
