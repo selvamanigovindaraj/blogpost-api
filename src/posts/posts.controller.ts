@@ -11,13 +11,15 @@ import {
   Delete,
   UseGuards,
   Request,
+  BadRequestException,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { ObjectId } from 'mongoose';
-
+import { ObjectId, isValidObjectId } from 'mongoose';
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
   /**
@@ -55,7 +57,13 @@ export class PostsController {
    * @returns {Promise<any>} - Promise representing the post.
    */
   @Get(':id')
-  getPostById(@Param('id') id: ObjectId) {
+  getPostById(
+    @Param('id')
+    id: ObjectId,
+  ) {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException('Invalid post ID');
+    }
     return this.postsService.findPostById(id);
   }
 
@@ -68,6 +76,9 @@ export class PostsController {
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   updatePost(@Param('id') id: ObjectId, @Body() updatePostDto: UpdatePostDto) {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException('Invalid post ID');
+    }
     return this.postsService.updatePostById(id, updatePostDto);
   }
 
@@ -79,6 +90,9 @@ export class PostsController {
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   deletePost(@Param('id') id: ObjectId) {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException('Invalid post ID');
+    }
     return this.postsService.deletePostById(id);
   }
 }

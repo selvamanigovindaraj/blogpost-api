@@ -1,0 +1,450 @@
+{
+	"info": {
+		"_postman_id": "d7a54665-a90f-491d-8d7e-b106431eeeff",
+		"name": "BLOGPOST",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4206112"
+	},
+	"item": [
+		{
+			"name": "create post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"_id\", jsonData._id)\r",
+							"\r",
+							"// test case for valid data\r",
+							"if (pm.variables.get('requestType') == \"validdata\") {\r",
+							"    // Verify the response status code is 201 Created\r",
+							"    pm.test(\"Status code is 201 Created\", function () {\r",
+							"        pm.response.to.have.status(201);\r",
+							"    });\r",
+							"\r",
+							"    // Verify the response contains the correct data\r",
+							"    pm.test(\"Response contains correct data\", function () {\r",
+							"        let title = pm.variables.get(\"title\");\r",
+							"        let body = pm.variables.get(\"description\");\r",
+							"        pm.expect(pm.response.json().title).to.eql(title);\r",
+							"        pm.expect(pm.response.json().body).to.eql(body);\r",
+							"        pm.expect(pm.response.json().userId).to.be.a('string');\r",
+							"        pm.expect(pm.response.json().createdAt).to.be.a('string');\r",
+							"        pm.expect(pm.response.json().updatedAt).to.be.a('string');\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// test case for expiredaccessToken and invalidaccessToken\r",
+							"\r",
+							"if(pm.variables.get('requestType') ===\"expiredaccessToken\" || pm.variables.get('requestType') ===\"invalidaccessToken\"){\r",
+							"    // Verify the response status code is 201 Created\r",
+							"    pm.test(\"Status code is 401 unauthorized\", function () {\r",
+							"        pm.response.to.have.status(401);\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"// test case for empty data\r",
+							"if(pm.variables.get('requestType') ===\"emptydata\" || pm.variables.get(\"requestType\") ===\"invaliddata\"){    // Verify the response status code is 201 Created\r",
+							"    pm.test(\"Status code is 400 bad request\", function () {\r",
+							"        pm.response.to.have.status(400);\r",
+							"    });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"{{title}}\",\r\n    \"body\":\"{{description}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/posts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// test case for valid data\r",
+							"if (pm.variables.get('requestType') == \"validdata\") {\r",
+							"    // Verify the response status code is 200 OK\r",
+							"    pm.test(\"Status code is 200 OK\", function () {\r",
+							"        pm.response.to.have.status(200);\r",
+							"    });\r",
+							"\r",
+							"    // Verify the response contains the updated post\r",
+							"    pm.test(\"Response contains updated post\", function () {\r",
+							"        let userId = pm.variables.get(\"userId\");\r",
+							"        let title = pm.variables.get(\"title\");\r",
+							"        let body = pm.variables.get(\"description\");\r",
+							"        pm.expect(pm.response.json().title).to.eql(title);\r",
+							"        pm.expect(pm.response.json().body).to.eql(body);\r",
+							"        pm.expect(pm.response.json().userId).to.be.a('string');\r",
+							"        pm.expect(pm.response.json().createdAt).to.be.a('string');\r",
+							"        pm.expect(pm.response.json().updatedAt).to.be.a('string');\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"\r",
+							"if(pm.variables.get('requestType') ===\"expiredaccessToken\" || pm.variables.get('requestType') ===\"invalidaccessToken\"){\r",
+							"    pm.test(\"Status code is 401 unauthorized\", function () {\r",
+							"        pm.response.to.have.status(401);\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"if(pm.variables.get('requestType') ===\"emptydata\" || pm.variables.get(\"requestType\") ===\"invaliddata\"){\r",
+							"    pm.test(\"Status code is 400 bad request\", function () {\r",
+							"        pm.response.to.have.status(400);\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"\r",
+							"// test case for empty data\r",
+							"if(pm.variables.get('requestType') ===\"emptydata\" || pm.variables.get(\"requestType\") ===\"invaliddata\"){    \r",
+							"    pm.test(\"Status code is 400 bad request\", function () {\r",
+							"        pm.response.to.have.status(400);\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"{{title}}\",\r\n    \"body\":\"{{description}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/posts/{{_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts",
+						"{{_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get posts of user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// test case for valid data\r",
+							"if (pm.variables.get('requestType') == \"validdata\") {\r",
+							"    // Verify the response status code is 200 OK\r",
+							"    pm.test(\"Status code is 200 OK\", function () {\r",
+							"        pm.response.to.have.status(200);\r",
+							"    });\r",
+							"\r",
+							"    // Verify the response contains an array of posts\r",
+							"    pm.test(\"Response contains an array of posts\", function () {\r",
+							"        pm.expect(pm.response.json()).to.be.an('array');\r",
+							"    });\r",
+							"\r",
+							"    // Verify the response contains at least one post\r",
+							"    pm.test(\"Response contains at least one post\", function () {\r",
+							"        pm.expect(pm.response.json().length).to.be.greaterThan(0);\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"\r",
+							"if(pm.variables.get('requestType') ===\"expiredaccessToken\" || pm.variables.get('requestType') ===\"invalidaccessToken\"){\r",
+							"    pm.test(\"Status code is 401 unauthorized\", function () {\r",
+							"        pm.response.to.have.status(401);\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/posts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get posts  by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// test case for valid data\r",
+							"if (pm.variables.get('requestType') == \"validdata\") {\r",
+							"    // Verify the response status code is 200 OK\r",
+							"    pm.test(\"Status code is 200 OK\", function () {\r",
+							"        pm.response.to.have.status(200);\r",
+							"    });\r",
+							"\r",
+							"    // Verify the response contains the correct post\r",
+							"    pm.test(\"Response contains correct post\", function () {\r",
+							"        let userId = pm.variables.get(\"userId\");\r",
+							"        let title = pm.variables.get(\"title\");\r",
+							"        let body = pm.variables.get(\"description\");\r",
+							"        pm.expect(pm.response.json().title).to.be.a('string');\r",
+							"        pm.expect(pm.response.json().body).to.be.a('string');\r",
+							"        pm.expect(pm.response.json().userId).to.be.a('string');\r",
+							"        pm.expect(pm.response.json().createdAt).to.be.a('string');\r",
+							"        pm.expect(pm.response.json().updatedAt).to.be.a('string');\r",
+							"        pm.expect(pm.response.json().title).to.be.eql(title);\r",
+							"        pm.expect(pm.response.json().body).to.be.eql(body);\r",
+							"        pm.expect(pm.response.json().userId).to.be.eql(String(userId));\r",
+							"    });\r",
+							"}\r",
+							"if(pm.variables.get('requestType') ===\"expiredaccessToken\" || pm.variables.get('requestType') ===\"invalidaccessToken\" || pm.variables.get('requestType') ===\"emptydata\" || pm.variables.get(\"requestType\") ===\"invaliddata\"){\r",
+							"    pm.test(\"Status code is 400 bad request\", function () {\r",
+							"        pm.response.to.have.status(400);\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/posts/{{_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts",
+						"{{_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete post by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// test case for valid data\r",
+							"if (pm.variables.get('requestType') == \"validdata\") {\r",
+							"    // Ensure that the status code returned is 204 (No Content)\r",
+							"    pm.test(\"Status code is 200\", function () {\r",
+							"        pm.response.to.have.status(200);\r",
+							"    });\r",
+							"\r",
+							"    // Ensure that the response body is empty\r",
+							"    pm.test(\"Response body is empty\", function () {\r",
+							"        pm.expect(pm.response.json().acknowledged).to.be.eql(true);\r",
+							"        pm.expect(pm.response.json().deletedCount).to.be.eql(1);\r",
+							"\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"\r",
+							"if(pm.variables.get('requestType') ===\"expiredaccessToken\" || pm.variables.get('requestType') ===\"invalidaccessToken\" || pm.variables.get('requestType') ===\"emptydata\" || pm.variables.get(\"requestType\") ===\"invaliddata\"){\r",
+							"    // Verify the response status code is 201 Created\r",
+							"    pm.test(\"Status code is 401 unauthorized\", function () {\r",
+							"        pm.response.to.have.status(401);\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/posts/{{_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts",
+						"{{_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "userId",
+			"value": "110660749740183019717",
+			"type": "string"
+		},
+		{
+			"key": "title",
+			"value": "error dolorum impedit dignissimos quia",
+			"type": "string"
+		},
+		{
+			"key": "description",
+			"value": "neque veritatis temporibus omnis et veniam accusantium",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNlbHZhZ2E5M0BnbWFpbC5jb20iLCJzdWIiOiIxMTA2NjA3NDk3NDAxODMwMTk3MTciLCJwcm92aWRlciI6Imdvb2dsZSIsImlhdCI6MTY4MDQ0ODE2MywiZXhwIjoxNjgwNDU0MTYzfQ.pF0LcuzQH5qn1Ec0Uog_tlmPCnlsrqKvvDdsrRHXp54",
+			"type": "string"
+		},
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "requestType",
+			"value": "emptydata",
+			"type": "string"
+		},
+		{
+			"key": "_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

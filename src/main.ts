@@ -10,6 +10,7 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -33,7 +34,7 @@ async function bootstrap() {
   // Set up the Pino logger and global error interceptor
   app.useLogger(app.get(Logger));
   app.useGlobalInterceptors(new LoggerErrorInterceptor());
-
+  app.useGlobalPipes(new ValidationPipe());
   // Start the application
   await app.listen(3000);
 }

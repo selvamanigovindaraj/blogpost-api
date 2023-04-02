@@ -24,7 +24,10 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Blog Post Api for adding and updating the post.
+
+## Pre-requesties
+Rename api.env to .env and add secret for google and facebook API to authenticate
 
 ## Installation
 
@@ -51,11 +54,40 @@ $ yarn run start:prod
 # unit tests
 $ yarn run test
 
-# e2e tests
-$ yarn run test:e2e
-
 # test coverage
 $ yarn run test:cov
+```
+
+## Generate Test Data
+ Use the same secret which is used in our env file for JWT
+ current secret = `secret` which is hardcoded
+ if changed please edit the same on `data-generator\test-data.generator.js`
+
+ Generated data will have (100000 posts for 1000 users)
+ - Valid data
+ - In valid data format data
+ - Empty data 
+ - Expired Access Token data 
+ - Invalid Access Token data
+ 
+```bash
+# generate test data
+$ yarn run generate:testdata
+```
+
+
+## API Testing
+1. Import collection from `postman`
+2. Use Run collection option from the postman 
+3. select the data from `data-generators/data/post.data.csv`
+4. RUN BLOGPOST
+
+## Documentaion
+
+
+```bash
+# generate documentation and run on port 8080
+$ yarn run documentation
 ```
 
 ## Support
